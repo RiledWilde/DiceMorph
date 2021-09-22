@@ -21,11 +21,14 @@ def draw(image, game, grid, height, width, die_L) :
   pygame.display.flip()
 
   for j in range(grid[1]) :
+
     yval = j * die_L
     P = (0,yval); Q = (width,yval)
     pygame.draw.line(game, background, P, Q)
 
+
   for i in range(grid[0]) :
+
     xval = i * die_L
     P = (xval,0); Q = (xval,height)
     # [50, 50, 50] would be a dark black
@@ -39,7 +42,13 @@ def draw(image, game, grid, height, width, die_L) :
 
   for x in range(grid[0]) :
     for y in range(grid[1]) :
-      brightness = image[y][x]
+
+      try:
+        brightness = image[y][x]
+      except IndexError:
+        print('Index of image out of bounds.')
+      except:
+        print('Problem arose in loop when scanning through the image.')
 
       if (number := ceil(brightness / 40)) == 0 :
         continue
@@ -48,16 +57,21 @@ def draw(image, game, grid, height, width, die_L) :
       die_y = die_L * (y + .5)
 
       for c in centres[number] :
+
         dot_x = int(die_x + .25 * c[0] * die_L)
         dot_y = int(die_y + .25 * c[1] * die_L)
-        # White colour - [255, 255, 255]
+
         pygame.draw.circle(game, foreground, (dot_x,dot_y), dot_r)
 
 
 if __name__ == '__main__' :
   pygame.init()
 
-  image = cv2.imread('input.png',0)
+  try:
+    image = cv2.imread('input.png',0)
+  except:
+    sys.exit('Image not found.')
+
   h, w = image.shape
   # What is the change in resolution?
   h *= 2; w *= 2
